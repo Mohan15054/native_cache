@@ -3,4 +3,4 @@ cache:
   eviction_policy: lru
   default_ttl: 60
   metrics_enabled: true
-  listen_addr: ":8080"
+  listen_addr: ":8081"
