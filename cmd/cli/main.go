@@ -5,9 +5,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"cachesystem/internal/config"
 )
 
+var baseUrl string
+
 func main() {
+	// Load configuration using the config package.
+	cfg := config.Load()
+	baseUrl = fmt.Sprintf("http://localhost:%d", cfg.ListenAddr)
+
 	// Define CLI flags
 	action := flag.String("action", "", "Action to perform: set, get, delete")
 	key := flag.String("key", "", "Key for the cache operation")
@@ -40,7 +48,7 @@ func main() {
 }
 
 func setKey(key, value string, ttl int) {
-	url := fmt.Sprintf("http://localhost:8080/set?key=%s&value=%s&ttl=%d", key, value, ttl)
+	url := fmt.Sprintf("%s/set?key=%s&value=%s&ttl=%d", baseUrl, key, value, ttl)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -52,7 +60,7 @@ func setKey(key, value string, ttl int) {
 }
 
 func getKey(key string) {
-	url := fmt.Sprintf("http://localhost:8080/get?key=%s", key)
+	url := fmt.Sprintf("%s/get?key=%s", baseUrl, key)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -64,7 +72,7 @@ func getKey(key string) {
 }
 
 func deleteKey(key string) {
-	url := fmt.Sprintf("http://localhost:8080/delete?key=%s", key)
+	url := fmt.Sprintf("%s/delete?key=%s", baseUrl, key)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error:", err)
